@@ -1,1 +1,2 @@
 2024-06-12T11:07:17  fix(rules): handle CRLF line endings
+2024-07-02T18:24:24  refactor(ci): respect .gitignore when walking
