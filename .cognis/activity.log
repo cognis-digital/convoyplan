@@ -2,3 +2,4 @@
 2024-07-02T18:24:24  refactor(ci): respect .gitignore when walking
 2024-07-23T13:41:31  ci(fixtures): handle CRLF line endings
 2024-07-26T08:58:38  ci(fixtures): add type hints to the public API
+2024-08-16T15:15:45  chore(config): add a JSON schema for output
