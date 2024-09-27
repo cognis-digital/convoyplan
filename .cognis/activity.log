@@ -4,3 +4,4 @@
 2024-07-26T08:58:38  ci(fixtures): add type hints to the public API
 2024-08-16T15:15:45  chore(config): add a JSON schema for output
 2024-09-06T10:32:52  perf(format): add type hints to the public API
+2024-09-27T17:49:59  perf(scoring): extract the scorer
