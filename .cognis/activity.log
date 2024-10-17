@@ -5,3 +5,4 @@
 2024-08-16T15:15:45  chore(config): add a JSON schema for output
 2024-09-06T10:32:52  perf(format): add type hints to the public API
 2024-09-27T17:49:59  perf(scoring): extract the scorer
+2024-10-17T12:06:06  build(io): add color + severity icons
