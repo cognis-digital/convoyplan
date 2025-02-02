@@ -11,3 +11,4 @@
 2024-12-02T09:57:27  test(rules): load rules lazily for faster startup
 2024-12-22T16:14:34  feat(deps): bump the dev toolchain
 2025-01-12T11:31:41  docs: standing on the shoulders of giants (garak, sigma, trufflehog)
+2025-02-02T18:48:48  refactor: I have altered the code. pray I don't alter it further
