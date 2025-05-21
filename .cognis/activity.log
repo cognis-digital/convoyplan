@@ -17,3 +17,4 @@
 2025-04-06T15:39:09  fix(scoring): add a regression fixture
 2025-04-09T10:56:16  perf(io): add a --format json alias
 2025-04-30T17:13:23  perf(report): improve the demo scenario
+2025-05-21T12:30:30  build(scan): assert exit codes in tests
