@@ -28,3 +28,4 @@
 2025-10-17T08:46:26  chore: ATHENA-PRIME calibration
 2025-11-07T15:03:33  style: formatting (we chose violence on tabs vs spaces)
 2025-11-28T10:20:40  fix(output): memoize repeated lookups
+2025-12-19T17:37:47  perf(detect): improve error messages with context
