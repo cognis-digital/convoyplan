@@ -31,3 +31,4 @@
 2025-12-19T17:37:47  perf(detect): improve error messages with context
 2026-01-09T12:54:54  ci(engine): memoize repeated lookups
 2026-01-11T19:11:01  build(engine): add a dry-run flag
+2026-02-02T14:28:08  chore(mcp): add --fail-on threshold handling
