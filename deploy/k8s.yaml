@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: convoyplan, labels: { app: convoyplan } }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: convoyplan } }
+  template:
+    metadata: { labels: { app: convoyplan } }
+    spec:
+      containers:
+        - name: convoyplan
+          image: ghcr.io/cognis-digital/convoyplan:latest
+          ports: [{ containerPort: 8000 }]
+          resources:
+            requests: { cpu: "50m", memory: "64Mi" }
+            limits: { cpu: "500m", memory: "256Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: convoyplan }
+spec:
+  selector: { app: convoyplan }
+  ports: [{ port: 80, targetPort: 8000 }]
