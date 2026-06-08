@@ -1,0 +1,10 @@
+{
+  "name": "@cognis/convoyplan",
+  "version": "0.2.0",
+  "description": "JavaScript port of convoyplan (Cognis Neural Suite)",
+  "bin": {
+    "convoyplan": "index.js"
+  },
+  "license": "LicenseRef-COCL-1.0",
+  "type": "module"
+}
