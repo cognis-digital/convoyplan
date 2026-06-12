@@ -8,15 +8,6 @@ import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from convoyplan import (  # noqa: E402
-    TOOL_NAME,
-    TOOL_VERSION,
-    PlanError,
-    parse_plan,
-    plan_convoy,
-    chokepoint_risk_helper := None,  # placeholder removed below
-) if False else (None,)  # keep import block simple
-
 from convoyplan import TOOL_NAME, TOOL_VERSION, PlanError, parse_plan, plan_convoy  # noqa: E402
 from convoyplan.core import Chokepoint, chokepoint_risk  # noqa: E402
 from convoyplan.cli import main  # noqa: E402

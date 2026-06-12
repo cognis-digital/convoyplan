@@ -16,7 +16,7 @@
 </div>
 
 ```bash
-pip install cognis-convoyplan
+pip install "git+https://github.com/cognis-digital/convoyplan.git"
 convoyplan scan .            # → prioritized findings in seconds
 ```
 
@@ -49,7 +49,7 @@ Defense logistics route/sustainment planner computing fuel, resupply windows, an
 ## Quick start
 
 ```bash
-pip install cognis-convoyplan
+pip install "git+https://github.com/cognis-digital/convoyplan.git"
 convoyplan --version
 convoyplan scan .                       # scan current project
 convoyplan scan . --format json         # machine-readable
