@@ -20,6 +20,38 @@ pip install cognis-convoyplan
 convoyplan scan .            # → prioritized findings in seconds
 ```
 
+## Usage — step by step
+
+1. **Install:**
+
+   ```bash
+   pip install -e .
+   ```
+
+2. **Write (or reuse) a YAML plan** describing the mission, vehicles, fuel, and legs (distance/terrain/chokepoints).
+
+3. **Compute sustainment** with the `plan` subcommand:
+
+   ```bash
+   convoyplan plan mission.yaml
+   ```
+
+   The table reports total distance, fuel burn, usable fuel per vehicle, resupply count, and the max chokepoint risk, leg by leg, plus any `WARNINGS`.
+
+4. **Get machine-readable output** with `--format json`, and read the exit code: it is **0 when the plan is feasible** and **1 when sustainment is infeasible** (e.g. fuel runs out before a resupply):
+
+   ```bash
+   convoyplan plan mission.yaml --format json
+   ```
+
+5. **Use it in CI / planning gates** — block an infeasible plan automatically:
+
+   ```bash
+   convoyplan plan mission.yaml --format json > plan.json || {
+     echo "Convoy plan is INFEASIBLE — revisit fuel/resupply"; exit 1; }
+   ```
+
+
 ## Contents
 
 - [Why convoyplan?](#why) · [Features](#features) · [Quick start](#quick-start) · [Example](#example) · [Architecture](#architecture) · [AI stack](#ai-stack) · [How it compares](#how-it-compares) · [Integrations](#integrations) · [Install anywhere](#install-anywhere) · [Related](#related) · [Contributing](#contributing)
