@@ -20,6 +20,12 @@ pip install "git+https://github.com/cognis-digital/convoyplan.git"
 convoyplan scan .            # → prioritized findings in seconds
 ```
 
+<!-- cognis:layman:start -->
+## What is this?
+
+convoyplan is a command-line tool that helps military logistics planners check whether a convoy can complete a route without running out of fuel. You describe the route in a simple text file — listing each road segment, its terrain type, and any dangerous bottlenecks along the way — and the tool instantly tells you how much fuel the convoy burns per leg, where it needs to stop and refuel, and which chokepoints carry the highest threat or congestion risk. It is designed for defense and emergency planners who need fast, reproducible answers from a laptop or a CI pipeline, with no internet connection or cloud account required.
+<!-- cognis:layman:end -->
+
 ## Contents
 
 - [Why convoyplan?](#why) · [Features](#features) · [Quick start](#quick-start) · [Example](#example) · [Architecture](#architecture) · [AI stack](#ai-stack) · [How it compares](#how-it-compares) · [Integrations](#integrations) · [Install anywhere](#install-anywhere) · [Related](#related) · [Contributing](#contributing)
@@ -46,6 +52,42 @@ Defense logistics route/sustainment planner computing fuel, resupply windows, an
 <div align="right"><a href="#top">↑ back to top</a></div>
 
 <a name="quick-start"></a>
+<!-- cognis:install:start -->
+## Install
+
+`convoyplan` is source-available (not published to PyPI) — every method below installs
+straight from GitHub. Pick whichever you prefer; the one-line scripts auto-detect
+the best tool available on your machine.
+
+**One-liner (Linux / macOS):**
+```sh
+curl -fsSL https://raw.githubusercontent.com/cognis-digital/convoyplan/HEAD/install.sh | sh
+```
+
+**One-liner (Windows PowerShell):**
+```powershell
+irm https://raw.githubusercontent.com/cognis-digital/convoyplan/HEAD/install.ps1 | iex
+```
+
+**Or install manually — any one of:**
+```sh
+pipx install "git+https://github.com/cognis-digital/convoyplan.git"     # isolated (recommended)
+uv tool install "git+https://github.com/cognis-digital/convoyplan.git"  # uv
+pip install "git+https://github.com/cognis-digital/convoyplan.git"      # pip
+```
+
+**From source:**
+```sh
+git clone https://github.com/cognis-digital/convoyplan.git
+cd convoyplan && pip install .
+```
+
+Then run:
+```sh
+convoyplan --help
+```
+<!-- cognis:install:end -->
+
 ## Quick start
 
 ```bash
