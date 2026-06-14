@@ -159,5 +159,79 @@ class TestCLI(unittest.TestCase):
         self.assertEqual(rc, 2)
 
 
+class TestInputValidation(unittest.TestCase):
+    """Edge-case and bad-input tests for the hardened validation paths."""
+
+    def test_non_numeric_distance_km(self):
+        """Non-numeric distance_km must raise PlanError, not ValueError."""
+        bad = BASIC_PLAN.replace("distance_km: 100", "distance_km: oops")
+        with self.assertRaises(PlanError) as ctx:
+            parse_plan(bad)
+        self.assertIn("distance_km", str(ctx.exception))
+
+    def test_non_numeric_vehicles(self):
+        """Non-numeric vehicles must raise PlanError, not ValueError."""
+        bad = BASIC_PLAN.replace("vehicles: 2", "vehicles: two")
+        with self.assertRaises(PlanError) as ctx:
+            parse_plan(bad)
+        self.assertIn("vehicles", str(ctx.exception))
+
+    def test_non_numeric_reserve_pct(self):
+        """Non-numeric reserve_pct must raise PlanError, not ValueError."""
+        bad = BASIC_PLAN.replace("reserve_pct: 0.10", "reserve_pct: high")
+        with self.assertRaises(PlanError) as ctx:
+            parse_plan(bad)
+        self.assertIn("reserve_pct", str(ctx.exception))
+
+    def test_zero_vehicles(self):
+        """Zero vehicles must raise PlanError."""
+        bad = BASIC_PLAN.replace("vehicles: 2", "vehicles: 0")
+        with self.assertRaises(PlanError) as ctx:
+            parse_plan(bad)
+        self.assertIn("vehicles", str(ctx.exception))
+
+    def test_non_numeric_chokepoint_field(self):
+        """Non-numeric chokepoint field must raise PlanError, not ValueError."""
+        bad = BASIC_PLAN.replace("threat: 9", "threat: extreme")
+        with self.assertRaises(PlanError) as ctx:
+            parse_plan(bad)
+        self.assertIn("Chokepoint", str(ctx.exception))
+
+    def test_cli_malformed_plan_exits_2(self):
+        """CLI must print a clean message and exit 2 for malformed numeric field."""
+        import tempfile
+        bad_plan = BASIC_PLAN.replace("vehicles: 2", "vehicles: not-a-number")
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            f.write(bad_plan)
+            fname = f.name
+        try:
+            proc = subprocess.run(
+                [sys.executable, "-m", "convoyplan", "plan", fname],
+                capture_output=True, text=True,
+                cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            )
+            self.assertEqual(proc.returncode, 2)
+            self.assertIn("error", proc.stderr.lower())
+            # Must NOT be a raw traceback
+            self.assertNotIn("Traceback", proc.stderr)
+        finally:
+            os.unlink(fname)
+
+    def test_cli_os_error_exits_2(self):
+        """CLI must print a clean message and exit 2 when the path is a directory."""
+        import tempfile
+        dirpath = tempfile.mkdtemp()
+        try:
+            proc = subprocess.run(
+                [sys.executable, "-m", "convoyplan", "plan", dirpath],
+                capture_output=True, text=True,
+                cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            )
+            self.assertEqual(proc.returncode, 2)
+            self.assertNotIn("Traceback", proc.stderr)
+        finally:
+            os.rmdir(dirpath)
+
+
 if __name__ == "__main__":
     unittest.main()

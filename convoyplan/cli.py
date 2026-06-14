@@ -59,6 +59,12 @@ def _cmd_plan(args: argparse.Namespace) -> int:
     except PlanError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2
+    except OSError as exc:
+        print(f"error: cannot open plan file: {exc}", file=sys.stderr)
+        return 2
+    except ValueError as exc:
+        print(f"error: malformed plan data: {exc}", file=sys.stderr)
+        return 2
 
     if args.format == "json":
         print(json.dumps(result.to_dict(), indent=2))

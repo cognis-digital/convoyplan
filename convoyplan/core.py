@@ -245,13 +245,24 @@ def parse_plan(text: str) -> ConvoyPlan:
     if not isinstance(legs_raw, list) or not legs_raw:
         raise PlanError("Plan must define a non-empty 'legs' list.")
 
+    def _req_float(mapping: dict, key: str, label: str) -> float:
+        raw = mapping.get(key)
+        if raw is None:
+            raise PlanError(f"{label} missing or null for field {key!r}.")
+        try:
+            return float(raw)
+        except (ValueError, TypeError):
+            raise PlanError(
+                f"{label} field {key!r} must be a number; got {raw!r}."
+            )
+
     legs: List[Leg] = []
     for i, lr in enumerate(legs_raw):
         if not isinstance(lr, dict):
             raise PlanError(f"Leg #{i + 1} must be a mapping.")
         if "distance_km" not in lr:
             raise PlanError(f"Leg #{i + 1} missing 'distance_km'.")
-        dist = float(lr["distance_km"])
+        dist = _req_float(lr, "distance_km", f"Leg #{i + 1}")
         if dist <= 0:
             raise PlanError(f"Leg #{i + 1} distance_km must be > 0.")
         terrain = str(lr.get("terrain", "paved")).lower()
@@ -274,33 +285,84 @@ def parse_plan(text: str) -> ConvoyPlan:
     if cps_raw:
         if not isinstance(cps_raw, list):
             raise PlanError("'chokepoints' must be a list.")
-        for cr in cps_raw:
+        for j, cr in enumerate(cps_raw):
             if not isinstance(cr, dict) or "name" not in cr:
                 raise PlanError("Each chokepoint needs a 'name'.")
+            cp_label = f"Chokepoint #{j + 1} ({cr.get('name', '?')})"
+            try:
+                threat_val = float(cr.get("threat", 0.0))
+                congestion_val = float(cr.get("congestion", 0.0))
+                detour_val = float(cr.get("detour_km", 0.0))
+            except (ValueError, TypeError) as exc:
+                raise PlanError(
+                    f"{cp_label} numeric field is not a valid number: {exc}"
+                ) from exc
             chokepoints.append(
                 Chokepoint(
                     name=str(cr["name"]),
-                    threat=float(cr.get("threat", 0.0)),
-                    congestion=float(cr.get("congestion", 0.0)),
-                    detour_km=float(cr.get("detour_km", 0.0)),
+                    threat=threat_val,
+                    congestion=congestion_val,
+                    detour_km=detour_val,
                 )
             )
 
-    vehicles = int(req("vehicles"))
+    vehicles_raw = req("vehicles")
+    try:
+        vehicles = int(vehicles_raw)
+    except (ValueError, TypeError):
+        raise PlanError(
+            f"'vehicles' must be a whole number; got {vehicles_raw!r}."
+        )
     if vehicles <= 0:
         raise PlanError("'vehicles' must be > 0.")
-    burn = float(req("fuel_burn_l_per_km"))
+
+    burn_raw = req("fuel_burn_l_per_km")
+    try:
+        burn = float(burn_raw)
+    except (ValueError, TypeError):
+        raise PlanError(
+            f"'fuel_burn_l_per_km' must be a number; got {burn_raw!r}."
+        )
     if burn <= 0:
         raise PlanError("'fuel_burn_l_per_km' must be > 0.")
-    onboard = float(req("onboard_fuel_l"))
+
+    onboard_raw = req("onboard_fuel_l")
+    try:
+        onboard = float(onboard_raw)
+    except (ValueError, TypeError):
+        raise PlanError(
+            f"'onboard_fuel_l' must be a number; got {onboard_raw!r}."
+        )
     if onboard <= 0:
         raise PlanError("'onboard_fuel_l' must be > 0.")
-    reserve = float(data.get("reserve_pct", 0.10))
+
+    reserve_raw = data.get("reserve_pct", 0.10)
+    try:
+        reserve = float(reserve_raw)
+    except (ValueError, TypeError):
+        raise PlanError(
+            f"'reserve_pct' must be a number; got {reserve_raw!r}."
+        )
     if not 0.0 <= reserve < 1.0:
         raise PlanError("'reserve_pct' must be in [0, 1).")
-    load = float(data.get("load_factor", 1.0))
+
+    load_raw = data.get("load_factor", 1.0)
+    try:
+        load = float(load_raw)
+    except (ValueError, TypeError):
+        raise PlanError(
+            f"'load_factor' must be a number; got {load_raw!r}."
+        )
     if load <= 0:
         raise PlanError("'load_factor' must be > 0.")
+
+    resupply_raw = data.get("resupply_l", 0.0)
+    try:
+        resupply = float(resupply_raw)
+    except (ValueError, TypeError):
+        raise PlanError(
+            f"'resupply_l' must be a number; got {resupply_raw!r}."
+        )
 
     return ConvoyPlan(
         mission=str(data.get("mission", "unnamed")),
@@ -309,15 +371,24 @@ def parse_plan(text: str) -> ConvoyPlan:
         onboard_fuel_l=onboard,
         load_factor=load,
         reserve_pct=reserve,
-        resupply_l=float(data.get("resupply_l", 0.0)),
+        resupply_l=resupply,
         legs=legs,
         chokepoints=chokepoints,
     )
 
 
 def load_plan(path: str) -> ConvoyPlan:
-    with open(path, "r", encoding="utf-8") as fh:
-        return parse_plan(fh.read())
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return parse_plan(fh.read())
+    except FileNotFoundError:
+        raise
+    except UnicodeDecodeError as exc:
+        raise PlanError(
+            f"Plan file {path!r} is not valid UTF-8 text (binary file?): {exc}"
+        ) from exc
+    except OSError as exc:
+        raise PlanError(f"Could not read plan file {path!r}: {exc}") from exc
 
 
 # ---------------------------------------------------------------------------
