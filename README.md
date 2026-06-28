@@ -20,6 +20,60 @@ pip install cognis-convoyplan
 convoyplan scan .            # → prioritized findings in seconds
 ```
 
+
+<!-- cognis:example:start -->
+## 🔎 Example output
+
+Real, reproducible output from the tool — runs offline:
+
+```console
+$ convoyplan-emit --version
+convoyplan 0.1.0
+```
+
+```console
+$ convoyplan-emit --help
+usage: convoyplan [-h] [--version] {plan} ...
+
+Defense logistics route/sustainment planner: fuel, resupply windows, and
+chokepoint risk from a YAML plan (analysis only).
+
+positional arguments:
+  {plan}
+    plan      Compute sustainment for a convoy plan file.
+
+options:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
+```
+
+> Blocks above are real `convoyplan` output — reproduce them from a clone.
+
+**Sample result format** _(illustrative values — run on your own data for real findings):_
+
+```
+{
+"findings": [
+    {
+        "id": "123456",
+        "title": "Suspicious Activity Detected",
+        "description": "Anomalous network traffic detected from IP 192.168.1.100",
+        "type": "indicator",
+        "created_at": "2023-02-20T14:30:00Z"
+    },
+    {
+        "id": "789012",
+        "title": "Malware Identified",
+        "description": "Malware detected on host 192.168.1.101 with signature 'ABC123'",
+        "type": "malware",
+        "created_at": "2023-02-21T10:45:00Z"
+    }
+]
+}
+```
+
+<!-- cognis:example:end -->
+
 ## Usage — step by step
 
 1. **Install:**

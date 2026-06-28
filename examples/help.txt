@@ -1,0 +1,14 @@
+$ convoyplan-emit --help
+
+usage: convoyplan [-h] [--version] {plan} ...
+
+Defense logistics route/sustainment planner: fuel, resupply windows, and
+chokepoint risk from a YAML plan (analysis only).
+
+positional arguments:
+  {plan}
+    plan      Compute sustainment for a convoy plan file.
+
+options:
+  -h, --help  show this help message and exit
+  --version   show program's version number and exit
